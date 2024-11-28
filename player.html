@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Live Stream Player</title>
+
+        <!-- Amazon IVS Player SDK -->
+        <script src="https://player.live-video.net/1.8.0/amazon-ivs-player.min.js"></script>
+
+        <style>
+            body {
+                margin: 0;
+                display: flex;
+                height: 100vh;
+                background-color: #18181b;
+            }
+            #video-container {
+                flex: 1;
+                background: black;
+            }
+            video {
+                width: 100%;
+                height: 100%;
+                outline: none;
+            }
+            html,
+            body {
+                margin: 0;
+                height: 100%;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="video-container">
+            <video id="example-video" controls autoplay muted></video>
+        </div>
+
+        <script>
+            const videoElement = document.getElementById("example-video");
+            const playbackUrl =
+                "Source.m3u8 amazon";
+
+            // Check if IVS Player is supported
+            if (IVSPlayer.isPlayerSupported) {
+                const player = IVSPlayer.create();
+                player.attachHTMLVideoElement(videoElement);
+                player.load(playbackUrl);
+                player.play();
+
+                // Add an event listener for when playback resumes
+                videoElement.addEventListener("play", () => {
+                    if (!player.isLiveLowLatency()) {
+                        player.seekToLive(); // Seek to the live edge
+                    }
+                });
+            } else {
+                console.error("IVS Player is not supported in this browser.");
+            }
+        </script>
+    </body>
+</html>
